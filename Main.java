@@ -13,16 +13,21 @@ public class Main {
     System.out.println(
         "Please select the difficulty level:\n1. Easy (10 chances)\n2. Medium (5 chances)\n3. Hard (3 chances)\n");
 
-    int difficulty;
+    int difficulty = 0;
 
     do {
-      System.out.print("Enter your choice: ");
-      difficulty = sc.nextInt();
-
-      if (difficulty < 0 || difficulty > 3) {
-        System.out.println("Invalid value. Please try again");
+      try {
+        System.out.print("Enter your choice: ");
+        difficulty = sc.nextInt();
+        
+        if (difficulty < 0 || difficulty > 3) {
+          System.out.println("Invalid value. Please try again.\n");
+        }
+      } catch(InputMismatchException e) {
+        System.out.println("Invalid input! Enter a numeric number.\n");
+        sc.nextLine();
+        continue;
       }
-
     } while (difficulty < 0 || difficulty > 3);
 
     String choiceInitialString = "\nGreat. You have selected the ";
@@ -42,7 +47,7 @@ public class Main {
     }
 
     int chances;
-    int tries = 0;
+    int tries = 1;
     int guess;
     String playAgain = "";
 
@@ -75,10 +80,6 @@ public class Main {
           chances--;
           tries++;
         }
-        if (!guessed) {
-          System.out.println("Waah you didn't guessed it. Better luck next time.");
-          System.out.println("The random number was " + randomInt);
-        }
 
       } else if (difficulty == 2) {
         chances = 5;
@@ -100,10 +101,6 @@ public class Main {
 
           chances--;
           tries++;
-        }
-        if (!guessed) {
-          System.out.println("Waah you didn't guessed it. Better luck next time.");
-          System.out.println("The random number was " + randomInt);
         }
 
       } else if (difficulty == 3) {
@@ -127,13 +124,17 @@ public class Main {
           chances--;
           tries++;
         }
-        if (!guessed) {
-          System.out.println("Waah you didn't guessed it. Better luck next time.");
-          System.out.println("The random number was " + randomInt);
-        }
       }
-      System.out.print("\nDo you want to play again? (yes/no) ");
-      playAgain = sc.next();
+
+      if (!guessed) {
+        System.out.println("Waah you didn't guessed it. Better luck next time.");
+        System.out.println("The random number was " + randomInt);
+      }
+
+      do {
+        System.out.print("\nDo you want to play again? (yes/no) ");
+        playAgain = sc.next();
+      } while((!playAgain.equalsIgnoreCase("yes")) && (!playAgain.equalsIgnoreCase("no")));
 
       if (playAgain.equalsIgnoreCase("yes")) {
         tries = 0;
