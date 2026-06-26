@@ -3,6 +3,7 @@ import java.util.Scanner;
 
 public class Main {
   public static void main(String[] args) {
+      
     Scanner sc = new Scanner(System.in);
 
     System.out.println("Welcome to the Number Guessing Game!");
@@ -20,15 +21,15 @@ public class Main {
         System.out.print("Enter your choice: ");
         difficulty = sc.nextInt();
         
-        if (difficulty < 0 || difficulty > 3) {
+        if (difficulty < 1 || difficulty > 3) {
           System.out.println("Invalid value. Please try again.\n");
         }
-      } catch(InputMismatchException e) {
+      } catch (InputMismatchException e) {
         System.out.println("Invalid input! Enter a numeric number.\n");
         sc.nextLine();
         continue;
       }
-    } while (difficulty < 0 || difficulty > 3);
+    } while (difficulty < 1 || difficulty > 3);
 
     String choiceInitialString = "\nGreat. You have selected the ";
     String choiceEndString = " difficulty level.\n";
@@ -54,6 +55,8 @@ public class Main {
     Logic logic = new Logic();
     boolean guessed = false;
 
+    long startTime = 0;
+
     do {
 
       double randomNumber = Math.random() * 100;
@@ -61,6 +64,8 @@ public class Main {
 
       if (difficulty == 1) {
         chances = 10;
+
+        startTime = System.nanoTime();
 
         while (chances > 0) {
           try {
@@ -84,6 +89,8 @@ public class Main {
       } else if (difficulty == 2) {
         chances = 5;
 
+        startTime = System.nanoTime();
+
         while (chances > 0) {
           try {
             System.out.print("Enter your guess: ");
@@ -105,6 +112,8 @@ public class Main {
 
       } else if (difficulty == 3) {
         chances = 3;
+
+        startTime = System.nanoTime();
 
         while (chances > 0) {
           try {
@@ -130,6 +139,19 @@ public class Main {
         System.out.println("Waah you didn't guessed it. Better luck next time.");
         System.out.println("The random number was " + randomInt);
       }
+      
+      if (guessed) {
+        long endTime = System.nanoTime();
+        long finalTimeSeconds = (endTime - startTime) / 1000000000;
+
+        if (finalTimeSeconds > 60) {
+          int finalTimeMinutes = (int) finalTimeSeconds / 60;
+          finalTimeSeconds = (int) finalTimeSeconds % 60;
+          System.out.println("You guessed it in " + finalTimeMinutes + " minute and " + finalTimeSeconds + " seconds.");
+        } else {
+          System.out.println("You guessed it in " + finalTimeSeconds + " seconds.");
+        }
+      }
 
       do {
         System.out.print("\nDo you want to play again? (yes/no) ");
@@ -139,13 +161,23 @@ public class Main {
       if (playAgain.equalsIgnoreCase("yes")) {
         tries = 0;
 
-        System.out.println(
-            "\nPlease select the difficulty level:\n1. Easy (10 chances)\n2. Medium (5 chances)\n3. Hard (3 chances)\n");
+        System.out.println("\nPlease select the difficulty level:\n1. Easy (10 chances)\n2. Medium (5 chances)\n3. Hard (3 chances)\n");
 
-        System.out.print("Enter your choice: ");
-        difficulty = sc.nextInt();
-        System.out.println();
+        do {
+          try {
+            System.out.print("Enter your choice: ");
+            difficulty = sc.nextInt();
+            System.out.println();
 
+            if (difficulty < 1 || difficulty > 3) {
+              System.out.println("Invalid value! Please try again.");
+            }
+
+          } catch (InputMismatchException e) {
+            System.out.println("Invalid value! Enter a numeric number.");
+            sc.nextLine();
+          }
+        } while (difficulty < 1 || difficulty > 3); 
       }
 
     } while (!playAgain.equalsIgnoreCase("no"));
@@ -157,7 +189,7 @@ class Logic {
 
   public boolean guessLogic(int guess, int randomInt, int tries) {
     if (guess == randomInt) {
-      System.out.println("Congratulations. You guessed the correct number in " + tries + " attempts\n");
+      System.out.println("Congratulations. You guessed the correct number in " + tries + " attempts");
       return true;
     } else if (guess > randomInt) {
       System.out.println("Incorrect. The number is less than " + guess + "\n");
