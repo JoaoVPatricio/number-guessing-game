@@ -1,9 +1,13 @@
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Main {
   public static void main(String[] args) {
-      
+
     Scanner sc = new Scanner(System.in);
 
     System.out.println("Welcome to the Number Guessing Game!");
@@ -20,7 +24,7 @@ public class Main {
       try {
         System.out.print("Enter your choice: ");
         difficulty = sc.nextInt();
-        
+
         if (difficulty < 1 || difficulty > 3) {
           System.out.println("Invalid value. Please try again.\n");
         }
@@ -51,6 +55,8 @@ public class Main {
     int tries = 1;
     int guess;
     String playAgain = "";
+    int bestTime = 0;
+    long finalTimeSeconds = 0;
 
     Logic logic = new Logic();
     boolean guessed = false;
@@ -139,10 +145,10 @@ public class Main {
         System.out.println("Waah you didn't guessed it. Better luck next time.");
         System.out.println("The random number was " + randomInt);
       }
-      
+
       if (guessed) {
         long endTime = System.nanoTime();
-        long finalTimeSeconds = (endTime - startTime) / 1000000000;
+        finalTimeSeconds = (endTime - startTime) / 1000000000;
 
         if (finalTimeSeconds > 60) {
           int finalTimeMinutes = (int) finalTimeSeconds / 60;
@@ -156,12 +162,13 @@ public class Main {
       do {
         System.out.print("\nDo you want to play again? (yes/no) ");
         playAgain = sc.next();
-      } while((!playAgain.equalsIgnoreCase("yes")) && (!playAgain.equalsIgnoreCase("no")));
+      } while ((!playAgain.equalsIgnoreCase("yes")) && (!playAgain.equalsIgnoreCase("no")));
 
       if (playAgain.equalsIgnoreCase("yes")) {
         tries = 0;
 
-        System.out.println("\nPlease select the difficulty level:\n1. Easy (10 chances)\n2. Medium (5 chances)\n3. Hard (3 chances)\n");
+        System.out.println(
+            "\nPlease select the difficulty level:\n1. Easy (10 chances)\n2. Medium (5 chances)\n3. Hard (3 chances)\n");
 
         do {
           try {
@@ -177,11 +184,48 @@ public class Main {
             System.out.println("Invalid value! Enter a numeric number.");
             sc.nextLine();
           }
-        } while (difficulty < 1 || difficulty > 3); 
+        } while (difficulty < 1 || difficulty > 3);
       }
 
     } while (!playAgain.equalsIgnoreCase("no"));
     sc.close();
+
+    bestTime = (int) finalTimeSeconds;
+    Integer bT = bestTime;
+    String bestTimeString = String.valueOf(bestTime);
+
+    String filePath = (difficulty == 1) ? "scores/easy.txt" : (difficulty == 2) ? "scores/medium.txt" : "scores/hard.txt";
+
+    File file = new File(filePath);
+
+    if (guessed) {
+      try (FileReader reader = new FileReader(filePath)) {
+        int size = reader.read();
+        // if (!file.exists() && size <= 0) {
+        // }
+        int l;
+
+        while ((l = reader.read()) != -1) {
+
+        }
+
+        //String lastHighScoreString = reader.readAllAsString();
+        //int lastHighScore = Integer.parseInt(lastHighScoreString);
+
+        //if (bestTime < lastHighScore) {
+          FileWriter writer = new FileWriter(filePath);
+          writer.write(bestTimeString);
+          writer.close();
+          System.out.println("New High Score: " + bestTime);
+
+        //} else {
+          //System.out.println("High Score: " + lastHighScore);
+        //}
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
+
   }
 }
 
