@@ -1,7 +1,3 @@
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -55,7 +51,6 @@ public class Main {
     int tries = 1;
     int guess;
     String playAgain = "";
-    int bestTime = 0;
     long finalTimeSeconds = 0;
 
     Logic logic = new Logic();
@@ -189,43 +184,6 @@ public class Main {
 
     } while (!playAgain.equalsIgnoreCase("no"));
     sc.close();
-
-    bestTime = (int) finalTimeSeconds;
-    Integer bT = bestTime;
-    String bestTimeString = String.valueOf(bestTime);
-
-    String filePath = (difficulty == 1) ? "scores/easy.txt" : (difficulty == 2) ? "scores/medium.txt" : "scores/hard.txt";
-
-    File file = new File(filePath);
-
-    if (guessed) {
-      try (FileReader reader = new FileReader(filePath)) {
-        int size = reader.read();
-        // if (!file.exists() && size <= 0) {
-        // }
-        int l;
-
-        while ((l = reader.read()) != -1) {
-
-        }
-
-        //String lastHighScoreString = reader.readAllAsString();
-        //int lastHighScore = Integer.parseInt(lastHighScoreString);
-
-        //if (bestTime < lastHighScore) {
-          FileWriter writer = new FileWriter(filePath);
-          writer.write(bestTimeString);
-          writer.close();
-          System.out.println("New High Score: " + bestTime);
-
-        //} else {
-          //System.out.println("High Score: " + lastHighScore);
-        //}
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
-    }
-
   }
 }
 
