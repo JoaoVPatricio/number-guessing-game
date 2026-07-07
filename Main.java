@@ -1,18 +1,34 @@
+import java.io.IOException;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Main {
+
+  public static void clearConsole() {
+    try {
+      if (System.getProperty("os.name").contains("Windows")) {
+        new ProcessBuilder("cmd", "/c", "cls").inheritIO().start();
+      } else {
+        new ProcessBuilder("clear").inheritIO().start().waitFor();
+      }
+    } catch (IOException | InterruptedException e) {
+      e.printStackTrace();
+    }
+  }
+
   public static void main(String[] args) {
 
     Scanner sc = new Scanner(System.in);
+
+    clearConsole();
 
     System.out.println("Welcome to the Number Guessing Game!");
     System.out.print("I'm thinking of a number between 1 and 100.");
     System.out.println(" Can you guess it?");
     System.out.println("Your chances are based on the difficulty you choose\n");
 
-    System.out.println(
-        "Please select the difficulty level:\n1. Easy (10 chances)\n2. Medium (5 chances)\n3. Hard (3 chances)\n");
+    System.out.println("Please select the difficulty level:\n1. Easy (10 chances)\n2. Medium (5 chances)\n3. Hard (3 chances)\n");
+    
 
     int difficulty = 0;
 
@@ -22,14 +38,20 @@ public class Main {
         difficulty = sc.nextInt();
 
         if (difficulty < 1 || difficulty > 3) {
+          clearConsole();
           System.out.println("Invalid value. Please try again.\n");
+          System.out.println("Please select the difficulty level:\n1. Easy (10 chances)\n2. Medium (5 chances)\n3. Hard (3 chances)\n");
         }
       } catch (InputMismatchException e) {
-        System.out.println("Invalid input! Enter a numeric number.\n");
+        clearConsole();
+        System.out.println("Invalid value! Enter a numeric number.\n");
+        System.out.println("Please select the difficulty level:\n1. Easy (10 chances)\n2. Medium (5 chances)\n3. Hard (3 chances)\n");
         sc.nextLine();
         continue;
       }
     } while (difficulty < 1 || difficulty > 3);
+
+    clearConsole();
 
     String choiceInitialString = "\nGreat. You have selected the ";
     String choiceEndString = " difficulty level.\n";
@@ -74,10 +96,12 @@ public class Main {
             guess = sc.nextInt();
             guessed = logic.guessLogic(guess, randomInt, tries);
           } catch (InputMismatchException e) {
-            System.out.println("Invalid input! Enter a numeric number.\n");
+            clearConsole();
+            System.out.println("Invalid value! Enter a numeric number.\n");
             sc.nextLine();
             continue;
           }
+
 
           if (guessed) {
             break;
@@ -98,7 +122,8 @@ public class Main {
             guess = sc.nextInt();
             guessed = logic.guessLogic(guess, randomInt, tries);
           } catch (InputMismatchException e) {
-            System.out.println("Invalid input! Enter a numeric number.\n");
+            clearConsole();
+            System.out.println("Invalid value! Enter a numeric number.\n");
             sc.nextLine();
             continue;
           }
@@ -122,7 +147,8 @@ public class Main {
             guess = sc.nextInt();
             guessed = logic.guessLogic(guess, randomInt, tries);
           } catch (InputMismatchException e) {
-            System.out.println("Invalid input! Enter a numeric number.\n");
+            clearConsole();
+            System.out.println("Invalid value! Enter a numeric number.\n");
             sc.nextLine();
             continue;
           }
@@ -156,14 +182,17 @@ public class Main {
 
       do {
         System.out.print("\nDo you want to play again? (yes/no) ");
+
         playAgain = sc.next();
       } while ((!playAgain.equalsIgnoreCase("yes")) && (!playAgain.equalsIgnoreCase("no")));
 
       if (playAgain.equalsIgnoreCase("yes")) {
         tries = 0;
+        difficulty = 0;
 
-        System.out.println(
-            "\nPlease select the difficulty level:\n1. Easy (10 chances)\n2. Medium (5 chances)\n3. Hard (3 chances)\n");
+        clearConsole();
+
+        System.out.println("\nPlease select the difficulty level:\n1. Easy (10 chances)\n2. Medium (5 chances)\n3. Hard (3 chances)\n");
 
         do {
           try {
@@ -172,16 +201,35 @@ public class Main {
             System.out.println();
 
             if (difficulty < 1 || difficulty > 3) {
+              clearConsole();
               System.out.println("Invalid value! Please try again.");
+              System.out.println("\nPlease select the difficulty level:\n1. Easy (10 chances)\n2. Medium (5 chances)\n3. Hard (3 chances)\n");
             }
 
           } catch (InputMismatchException e) {
+            clearConsole();
             System.out.println("Invalid value! Enter a numeric number.");
+            System.out.println("\nPlease select the difficulty level:\n1. Easy (10 chances)\n2. Medium (5 chances)\n3. Hard (3 chances)\n");
             sc.nextLine();
+            continue;
           }
         } while (difficulty < 1 || difficulty > 3);
-      }
 
+        clearConsole();
+
+        switch (difficulty) {
+          case 1:
+            System.out.println(choiceInitialString + "Easy" + choiceEndString);
+            break;
+          case 2:
+            System.out.println(choiceInitialString + "Medium" + choiceEndString);
+            break;
+          case 3:
+            System.out.println(choiceInitialString + "Hard" + choiceEndString);
+          default:
+          break;
+        }
+      }
     } while (!playAgain.equalsIgnoreCase("no"));
     sc.close();
   }
@@ -194,8 +242,10 @@ class Logic {
       System.out.println("Congratulations. You guessed the correct number in " + tries + " attempts");
       return true;
     } else if (guess > randomInt) {
+      Main.clearConsole();
       System.out.println("Incorrect. The number is less than " + guess + "\n");
     } else {
+      Main.clearConsole();
       System.out.println("Incorrect. The number is more than " + guess + "\n");
     }
 
